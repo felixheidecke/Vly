@@ -10,7 +10,7 @@ Use your Vue.js Single-File components without the need to compile.
 
 ```html
 <script src="https://unpkg.com/vue"></script>
-<script src="js/vly.js"></script>
+<script src="https://unpkg.com/on-the-vly"></script>
 <script>
 
 (async () => {
