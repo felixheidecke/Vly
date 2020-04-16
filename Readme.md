@@ -25,6 +25,10 @@ Use your Vue.js Single-File components without the need to compile.
 </script>
 ```
 
+### Usage
+
+`Vue('path/to/components', { name : 'filename.vue' })`
+
 ### Restrictions
 
 * Does not support CSS precompilers such as Sass/SCSS, Less or PostCSS
