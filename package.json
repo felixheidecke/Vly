@@ -1,0 +1,11 @@
+{
+  "name": "vly",
+  "version": "0.1.0-beta",
+  "description": "Vue Single-File Components on the Fly",
+  "main": "vly.js",
+  "keywords": [
+    "Vue.js"
+  ],
+  "author": "Felix Heidecke",
+  "license": "ISC"
+}
