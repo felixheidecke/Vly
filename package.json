@@ -1,6 +1,6 @@
 {
   "name": "vly",
-  "version": "0.1.0-beta",
+  "version": "0.1.0",
   "description": "Vue Single-File Components on the Fly",
   "main": "vly.js",
   "keywords": [
