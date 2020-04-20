@@ -12,13 +12,17 @@ Use your Vue.js Single-File components without the need to compile.
 <script src="https://unpkg.com/vue"></script>
 <script src="js/vly.js"></script>
 <script>
-
 (async () => {
 
-  await new Vly('components', {
-    Intro: 'Intro.vue',
-    btn: 'Button.vue'
-  })
+  const components = {
+    myIntro: 'components/Intro.vue',
+    myButton: 'components/Button.vue'
+  }
+
+  const mixins = ['mixins/mix.js']
+
+  await Vly.component(components)
+  await Vly.mixin(mixins)
 
   new Vue({el: '#app'})
 })()

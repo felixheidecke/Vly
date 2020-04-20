@@ -16,63 +16,78 @@
  * @copyright Felix Heidecke 2020
  */
 
-class Vly {
+( () => {
 
-  constructor (base, components) {
-    this._queue = []
-    this._components = []
-    this._base = base
+  _queue = []
 
-    return this.require(components)
-  }
+  _components = []
+  _mixins = []
 
-  get components () {
-    return this._components
-  }
-
-  require (components) {
-
-    for (let [name, path] of Object.entries(components)) {
-      this._queue.push( this.fetch(name, path) )
+  const component = files => {
+    for (let [name, path] of Object.entries(files)) {
+      _queue.push( _fetchComponent(name, path) )
     }
 
-    return Promise.all(this._queue).then( () => this)
+    return Promise.all(_queue)
   }
 
-  async fetch (name, path) {
+  const mixin = files => {
 
-    if (this._components[path])
+    files.forEach(file => {
+      _queue.push( _fetchMixin(file) )
+    });
+
+    return Promise.all(_queue)
+  }
+
+  const _fetchComponent = async (name, path) => {
+
+    if (_components[path])
       return Promise.resolve()
 
-    await fetch(this._base + '/' + path)
+    await fetch(path)
       .then(response => response.text())
       .then(content => {
+        const template = (_match(content, /<template>([\s\S]*?)<\/template>/)) || false
+        const script   = (_match(content, /<script>.*?export\s+?default([\s\S]*?)<\/script>/)) || false
+        const style    = (_match(content, /<style.*?>([\s\S]*?)<\/style>/)) || false
 
-        const template = (this._matchTemplate(content)) || false
-        const script   = (this._matchScript(content)) || false
-        const style    = (this._matchStyle(content)) || false
-
-        if (!template)
-          return console.warn('A template is required in', path)
-
-        if (!script)
-          return console.warn('A template is required in', path)
-
-        const code = `(function() {
+        const code     = `(function() {
           let component = (${script}) || {}
 
           component.template = \`${template}\`
           Vue.component("${name}", component)
         })()`
 
-        this._components.push(path)
-        this.addStyle(style)
+        _components.push(path)
+        addStyle(style)
         eval(code)
       })
       .catch( e => console.error(e));
   }
 
-  addStyle (style) {
+  const _fetchMixin = async path => {
+
+    if (_mixins[path])
+      return Promise.resolve()
+
+    await fetch(path)
+      .then(response => response.text())
+      .then(content => {
+
+        const mixin = (_match(content, /.*?export\s+?default([\s\S]+)/)) || false
+
+        console.log(mixin)
+
+        const code  = `(function() { Vue.mixin(${mixin}) })()`
+        
+        _mixins.push(path)
+        eval(code)
+      })
+      .catch( e => console.error(e));
+  }
+
+  const addStyle = style => {
     let el = document.createElement('style')
     el.setAttribute('type', 'text/css')
     el.innerHTML = style
@@ -82,26 +97,24 @@ class Vly {
   // ----------------
   // Helper functions
 
-  _matchTemplate = string => {
-    const code = string.match(/<template>([\s\S]*?)<\/template>/)
+  const _match = (string, regex) => {
+    const code = _toOneLine(string).match(regex)
     if (code === null) return
+
+    console.log(code)
 
     return code[1].trim()
   }
 
-  _matchScript = string => {
-    const code = string.match(/<script>([\s\S]*?)<\/script>/)
-    if (code === null) return
-
-    return code[1]
-      .trim()
-      .replace(/.*?{/, '{')
+  const _toOneLine = string => {
+    return string
+      .replace(/\n/g, ' ')
+      .replace(/\s{2,}/g, ' ')
   }
 
-  _matchStyle = string => {
-    const code = string.match(/<style.*?>([\s\S]*?)<\/style>/)
-    if (code === null) return
-
-    return code[1].trim()
+  window.Vly = {
+    component,
+    mixin
   }
-}
+
+})()
