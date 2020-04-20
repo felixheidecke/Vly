@@ -1,4 +1,5 @@
-```               __  __            _    ____     
+```
+                  __  __            _    ____     
   ____  ____     / /_/ /_  ___     | |  / / /_  __
  / __ \/ __ \   / __/ __ \/ _ \    | | / / / / / /
 / /_/ / / / /  / /_/ / / /  __/    | |/ / / /_/ / 
@@ -10,7 +11,7 @@ Use your Vue.js Single-File components without the need to compile.
 
 ```html
 <script src="https://unpkg.com/vue"></script>
-<script src="js/vly.js"></script>
+<script src="https://unpkg.com/on-the-vly"></script>
 <script>
 (async () => {
 
@@ -28,6 +29,10 @@ Use your Vue.js Single-File components without the need to compile.
 })()
 </script>
 ```
+
+### Usage
+
+`Vue('path/to/components', { name : 'filename.vue' })`
 
 ### Restrictions
 
